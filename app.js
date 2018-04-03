@@ -6,6 +6,9 @@ var logger = require('morgan');
 var bodyParser = require('body-parser');
 var expressHbs = require('express-handlebars');
 var mongoose = require('mongoose');
+var session = require('express-session');
+var passport = require('passport');
+var flash = require('connect-flash');
 
 var routes = require('./routes/index');
 
@@ -13,6 +16,8 @@ var app = express();
 
 
 mongoose.connect('localhost:27017/shopping')
+require('./config/passport'); // Load the config from passport component
+
 // view engine setup
 app.engine('.hbs', expressHbs({defaultLayout: 'layout', extname: '.hbs'}));
 app.set('views', path.join(__dirname, 'views'));
@@ -22,6 +27,11 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(session({secret: 'verysecretindeed', resave: false, saveUninitialized: false}));
+app.use(flash());
+// Google pasport strategies to get other sign-in methods like facebook or google
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
