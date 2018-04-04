@@ -12,7 +12,7 @@ var flash = require('connect-flash');
 var validator = require('express-validator');
 
 var routes = require('./routes/index');
-
+var userRotes = require('./routes/user');
 var app = express();
 
 
@@ -36,7 +36,15 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
+app.use(function(req, res, next) {
+  res.locals.login = req.isAuthenticated(); // setting a global variable 'login', will be used in header.hbs
+  next();
+});
+
+// where to send requests
+app.use('/user', userRotes); // send to user.js (in routes)
+app.use('/', routes);        // send to index.js (in routes)
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
