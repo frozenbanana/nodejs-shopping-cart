@@ -16,7 +16,7 @@ var routes = require('./routes/index');
 var app = express();
 
 
-mongoose.connect('localhost:27017/shopping')
+mongoose.connect('localhost:27017/shopping');
 require('./config/passport'); // Load the config from passport component
 
 // view engine setup
